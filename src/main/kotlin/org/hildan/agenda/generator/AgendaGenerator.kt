@@ -12,7 +12,8 @@ class AgendaGenerator(val templateProvider: () -> InputStream) {
 
     fun generateAgenda(agenda: Agenda, outputFilename: String = filename(agenda)) {
        File(outputFilename).outputStream().use {
-           stamper.stamp(templateProvider(), agenda, it)
+           val context = JContext().apply { this.a = agenda }
+           stamper.stamp(templateProvider(), context, it)
            println("Agenda generated as $outputFilename")
        }
     }

@@ -29,24 +29,14 @@ fun fakeAgenda(): Agenda {
 }
 
 // needs to be open for docx-stamper proxy system to work
-open class Agenda(
+class Agenda(
     val date: LocalDate,
     val candidate: Person,
     val morningTaxiTime: LocalTime,
     val eveningTaxiTime: LocalTime,
     val morningSlots: List<Interview>,
     val afternoonSlots: List<Interview>
-) {
-    // for docx-stamper proxy system to work
-    constructor() : this(
-        LocalDate.now(),
-        Person("first", "last"),
-        1 h 0,
-        1 h 0,
-        emptyList(),
-        emptyList()
-    )
-}
+)
 
 class Interview(
     val start: LocalTime,
