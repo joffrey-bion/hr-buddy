@@ -1,36 +1,42 @@
 package org.hildan.agenda.generator
 
+import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.SystemExitException
+import com.xenomachina.argparser.default
+import com.xenomachina.argparser.mainBody
 import java.io.File
-import java.io.InputStream
 
-fun main(args: Array<String>) {
-    val agenda = fakeAgenda()
-    val generator = AgendaGenerator(templateProvider(args))
+class Config(parser: ArgParser) {
 
-    generator.generateAgenda(agenda)
+    val planningFile: File by parser.positional("PLANNING", "planning file") { File(this) }
+        .addValidator {
+            if (!value.exists()) {
+                throw SystemExitException("Planning Excel file not found", 1)
+            }
+        }
+
+    val templateFile: File? by parser.storing("-t", "--template", help = "template for agendas") { File(this) }
+        .default<File?>(null)
+        .addValidator {
+            val file = if (value == null) return@addValidator else value!!
+            if (!file.exists()) {
+                throw SystemExitException("Agenda template file not found", 1)
+            }
+            if (file.isDirectory) {
+                throw SystemExitException("Invalid agenda template file, the given path points to a directory", 1)
+            }
+            if (file.extension != "docx") {
+                throw SystemExitException("Invalid agenda template file type, expected .docx", 1)
+            }
+        }
 }
 
-private fun templateProvider(args: Array<String>) = if (args.isEmpty()) {
-    defaultTemplateProvider()
-} else {
-    fileTemplateProvider(args[0])
-}
-
-const val defaultResource = "/agenda-template.docx"
-
-private fun defaultTemplateProvider(): () -> InputStream = {
-    AgendaGenerator::class.java.getResourceAsStream(defaultResource)
-}
-
-private fun fileTemplateProvider(templateFilename: String): () -> InputStream {
-    val templateFile = File(templateFilename)
-    if (!templateFile.exists()) {
-        System.err.println("The given template file $templateFilename was not found")
-        System.exit(1)
-    } else if (templateFile.isDirectory) {
-        System.err.println("The given template file path points to a directory, not a .docx file")
-        System.exit(1)
+fun main(args: Array<String>) = mainBody {
+    ArgParser(args).parseInto(::Config).run {
+//        val planning = parsePlanning(planningFile)
+//        val agendas = planning.toAgendas()
+        val agendas = listOf(fakeAgenda())
+        val agendaWriter = AgendaWriter(templateFile)
+        agendas.forEach { agendaWriter.write(it) }
     }
-    return { templateFile.inputStream() }
 }
-
