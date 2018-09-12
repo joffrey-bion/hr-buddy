@@ -4,6 +4,7 @@ import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.SystemExitException
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
+import org.hildan.agenda.generator.planning.parsePlanning
 import java.io.File
 
 class Config(parser: ArgParser) {
@@ -33,9 +34,8 @@ class Config(parser: ArgParser) {
 
 fun main(args: Array<String>) = mainBody {
     ArgParser(args).parseInto(::Config).run {
-//        val planning = parsePlanning(planningFile)
-//        val agendas = planning.toAgendas()
-        val agendas = listOf(fakeAgenda())
+        val planning = parsePlanning(planningFile)
+        val agendas = planning.toAgendas()
         val agendaWriter = AgendaWriter(templateFile)
         agendas.forEach { agendaWriter.write(it) }
     }

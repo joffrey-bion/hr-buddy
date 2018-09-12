@@ -7,6 +7,26 @@ open class Person(
     val fullName: String = "$firstName ${lastName.toUpperCase()}"
 
     override fun toString(): String = fullName
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Person
+
+        if (firstName != other.firstName) return false
+        if (lastName != other.lastName) return false
+        if (fullName != other.fullName) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = firstName.hashCode()
+        result = 31 * result + lastName.hashCode()
+        result = 31 * result + fullName.hashCode()
+        return result
+    }
 }
 
 class Employee(
@@ -24,5 +44,31 @@ class Employee(
         this
     } else {
         "$this - $suffix"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        if (!super.equals(other)) return false
+
+        other as Employee
+
+        if (jobTitle != other.jobTitle) return false
+        if (division != other.division) return false
+        if (subdivision != other.subdivision) return false
+        if (team != other.team) return false
+        if (description != other.description) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + jobTitle.hashCode()
+        result = 31 * result + (division?.hashCode() ?: 0)
+        result = 31 * result + (subdivision?.hashCode() ?: 0)
+        result = 31 * result + (team?.hashCode() ?: 0)
+        result = 31 * result + description.hashCode()
+        return result
     }
 }
