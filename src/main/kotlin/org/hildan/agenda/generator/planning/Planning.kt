@@ -37,6 +37,7 @@ data class GlobalInfo(
 )
 
 data class Debriefing(
-    val time: LocalTime,
+    val start: LocalTime,
+    val end: LocalTime,
     val room: Room
 )

@@ -223,5 +223,5 @@ private fun parseDebrief(start: LocalTime, end: LocalTime, firstData: String, ro
         ?: formatError("Expected debriefing data like 'DEBRIEFING (room)', got '$firstData'", rowNum, 1)
     val roomText = roomMatch.groupValues[1]
     val room = parseRoom(roomText, rowNum, 1)
-    return Debriefing(start, room)
+    return Debriefing(start, end, room)
 }
