@@ -4,6 +4,7 @@ plugins {
 
 apply plugin: 'application'
 
+version = '1.0.0'
 mainClassName = 'org.hildan.agenda.generator.MainKt'
 
 repositories {
