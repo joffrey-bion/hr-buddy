@@ -6,14 +6,17 @@ import java.io.File
 import java.io.InputStream
 import java.time.format.DateTimeFormatter
 
-class AgendaWriter(private val templateProvider: () -> InputStream) {
+class AgendaWriter(
+    private val templateProvider: () -> InputStream,
+    private val outputDir: File
+) {
 
     private val stamper: DocxStamper<Any> = DocxStamperConfiguration().build()
 
-    constructor(templateFile: File?) : this(templateProvider(templateFile))
+    constructor(templateFile: File?, outputDir: File) : this(templateProvider(templateFile), outputDir)
 
     fun write(agenda: Agenda, outputFilename: String = filename(agenda)) {
-        File(outputFilename).outputStream().use {
+        outputDir.resolve(outputFilename).outputStream().use {
             val context = JContext().apply { this.a = agenda }
             stamper.stamp(templateProvider(), context, it)
             println("Agenda generated as $outputFilename")

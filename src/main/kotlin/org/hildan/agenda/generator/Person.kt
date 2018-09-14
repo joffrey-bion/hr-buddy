@@ -1,5 +1,7 @@
 package org.hildan.agenda.generator
 
+import java.time.LocalTime
+
 open class Person(
     val firstName: String,
     val lastName: String
@@ -25,6 +27,34 @@ open class Person(
         var result = firstName.hashCode()
         result = 31 * result + lastName.hashCode()
         result = 31 * result + fullName.hashCode()
+        return result
+    }
+}
+
+class Candidate(
+    firstName: String,
+    lastName: String,
+    val morningTaxiTime: LocalTime,
+    val eveningTaxiTime: LocalTime
+) : Person(firstName, lastName) {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        if (!super.equals(other)) return false
+
+        other as Candidate
+
+        if (morningTaxiTime != other.morningTaxiTime) return false
+        if (eveningTaxiTime != other.eveningTaxiTime) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + morningTaxiTime.hashCode()
+        result = 31 * result + eveningTaxiTime.hashCode()
         return result
     }
 }

@@ -4,10 +4,12 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.hildan.agenda.generator.Candidate
 import org.hildan.agenda.generator.Employee
+import org.hildan.agenda.generator.HalfDay
 import org.hildan.agenda.generator.Interview
-import org.hildan.agenda.generator.Person
 import org.hildan.agenda.generator.Room
+import org.hildan.agenda.generator.h
 import java.io.File
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -160,12 +162,14 @@ private fun buildInterviews(
 ): Pair<List<Interview>, Debriefing> {
     val interviews = mutableListOf<Interview>()
     var rowNum = startRowNum
+    var halfDay = HalfDay.MORNING
     while (true) {
         val row = sheet.getRow(rowNum) ?: error("Reached the end of the document without finding the DEBRIEFING")
         val timeSlot = getTimeSlotText(row)
         val firstData = row.secondContent()
         if (timeSlot == "LUNCH" || firstData == "LUNCH") {
             rowNum++
+            halfDay = HalfDay.AFTERNOON
             continue
         }
         val (startTime, endTime) = parseTimeSlot(timeSlot, rowNum)
@@ -179,10 +183,10 @@ private fun buildInterviews(
         candidateNames.forEachIndexed { i, name ->
             if (name != null) {
                 val (firstName, lastName) = splitFullName(name, rowNum, i + 1)
-                val candidate = Person(firstName, lastName)
+                val candidate = Candidate(firstName, lastName, 8 h 0, 17 h 0)
                 val interviewer = interviewers[i]
                 val room = rooms[i]
-                val interview = Interview(startTime, endTime, candidate, interviewer, room)
+                val interview = Interview(startTime, endTime, candidate, interviewer, room, halfDay)
                 interviews.add(interview)
             }
         }
