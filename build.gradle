@@ -1,0 +1,9 @@
+allprojects {
+    group = 'org.hildan.hrbuddy'
+    version = '1.0.0'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
