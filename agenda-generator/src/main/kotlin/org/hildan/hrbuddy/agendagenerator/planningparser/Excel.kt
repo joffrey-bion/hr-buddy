@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import java.time.LocalDate
+import java.time.ZoneId
 
 internal fun getStringData(sheet: Sheet, key: String): String {
     val cell = getData(sheet, key)
@@ -21,8 +22,10 @@ internal fun getStringData(sheet: Sheet, key: String): String {
 internal fun getDateData(sheet: Sheet, key: String): LocalDate {
     val cell = getData(sheet, key)
     try {
-        val data = cell.dateCellValue
-        return LocalDate.ofEpochDay(data.time / 1000 / 3600 / 24)
+        val date = cell.dateCellValue ?: formatError("Missing value for '$key'", cell.rowIndex, cell.columnIndex)
+        // Excel stores local dates, and Apache POI uses the default time zone to convert to java.util.Date
+        // We need to use the default time zone to get back a correct LocalDate
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
     } catch (e: IllegalStateException) {
         formatError("Wrong type for '$key', expected date (${e.message})", cell.rowIndex, cell.columnIndex)
     }
