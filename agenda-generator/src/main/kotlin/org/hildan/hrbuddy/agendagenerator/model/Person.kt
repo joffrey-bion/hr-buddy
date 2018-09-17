@@ -1,4 +1,4 @@
-package org.hildan.agenda.generator
+package org.hildan.hrbuddy.agendagenerator.model
 
 import java.time.LocalTime
 

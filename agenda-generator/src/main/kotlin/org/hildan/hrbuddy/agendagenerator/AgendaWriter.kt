@@ -1,5 +1,6 @@
-package org.hildan.agenda.generator
+package org.hildan.hrbuddy.agendagenerator
 
+import org.hildan.hrbuddy.agendagenerator.model.Agenda
 import org.wickedsource.docxstamper.DocxStamper
 import org.wickedsource.docxstamper.DocxStamperConfiguration
 import java.io.File

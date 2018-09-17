@@ -1,4 +1,4 @@
-package org.hildan.agenda.generator
+package org.hildan.hrbuddy.agendagenerator.model
 
 import java.time.LocalDate
 import java.time.LocalTime
@@ -18,13 +18,8 @@ class Interview(
     val candidate: Candidate,
     val interviewer: Employee,
     val room: Room,
-    val halfDay: HalfDay
+    val isBeforeLunch: Boolean
 )
-
-enum class HalfDay {
-    MORNING,
-    AFTERNOON
-}
 
 class Room(
     val code: String,

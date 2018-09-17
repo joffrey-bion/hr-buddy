@@ -1,4 +1,6 @@
-package org.hildan.agenda.generator;
+package org.hildan.hrbuddy.agendagenerator;
+
+import org.hildan.hrbuddy.agendagenerator.model.Agenda;
 
 /**
  * This wrapping is necessary because docx-stamper's proxy system does not work inside comments.

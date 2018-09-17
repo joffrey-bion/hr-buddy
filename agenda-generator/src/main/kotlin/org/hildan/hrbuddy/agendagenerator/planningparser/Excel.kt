@@ -1,4 +1,4 @@
-package org.hildan.agenda.generator.planning
+package org.hildan.hrbuddy.agendagenerator.planningparser
 
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row

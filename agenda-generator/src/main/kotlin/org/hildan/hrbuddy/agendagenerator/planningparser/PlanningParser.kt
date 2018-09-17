@@ -1,15 +1,17 @@
-package org.hildan.agenda.generator.planning
+package org.hildan.hrbuddy.agendagenerator.planningparser
 
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import org.hildan.agenda.generator.Candidate
-import org.hildan.agenda.generator.Employee
-import org.hildan.agenda.generator.HalfDay
-import org.hildan.agenda.generator.Interview
-import org.hildan.agenda.generator.Room
-import org.hildan.agenda.generator.h
+import org.hildan.hrbuddy.agendagenerator.model.Candidate
+import org.hildan.hrbuddy.agendagenerator.model.Debriefing
+import org.hildan.hrbuddy.agendagenerator.model.Employee
+import org.hildan.hrbuddy.agendagenerator.model.GlobalInfo
+import org.hildan.hrbuddy.agendagenerator.model.Interview
+import org.hildan.hrbuddy.agendagenerator.model.Planning
+import org.hildan.hrbuddy.agendagenerator.model.Room
+import org.hildan.hrbuddy.agendagenerator.model.h
 import java.io.File
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -25,12 +27,13 @@ private fun parsePlanning(workbook: Workbook): Planning {
 
 private fun parseGlobalInfo(workbook: Workbook): GlobalInfo {
     val globalInfoSheet = workbook.getSheet("Global info") ?: formatError("Missing sheet named 'Global info'")
-    val date = getDateData(globalInfoSheet, "Date")
-    val divisionCode = getStringData(globalInfoSheet, "Division Code")
-    val divisionName = getStringData(globalInfoSheet, "Division Name")
-    val subdivisionCode = getStringData(globalInfoSheet, "Subdivision Code")
-    val subdivisionName = getStringData(globalInfoSheet, "Subdivision Name")
-    return GlobalInfo(date, divisionCode, divisionName, subdivisionCode, subdivisionName)
+    return GlobalInfo(
+        date = getDateData(globalInfoSheet, "Date"),
+        divisionCode = getStringData(globalInfoSheet, "Division Code"),
+        divisionName = getStringData(globalInfoSheet, "Division Name"),
+        subdivisionCode = getStringData(globalInfoSheet, "Subdivision Code"),
+        subdivisionName = getStringData(globalInfoSheet, "Subdivision Name")
+    )
 }
 
 private fun parseInterviews(workbook: Workbook, globalInfo: GlobalInfo): Pair<List<Interview>, Debriefing> {
@@ -41,7 +44,9 @@ private fun parseInterviews(workbook: Workbook, globalInfo: GlobalInfo): Pair<Li
     var lastDebriefing: Debriefing? = null
     while (true) {
         startRowNum = planningSheet.nextRowStartingWith("Interviewer", startRowNum)?.rowNum ?: break
-        val (tableInteviews, debrief) = parseInterviewTable(planningSheet, startRowNum, globalInfo)
+        val (tableInteviews, debrief) = parseInterviewTable(
+            planningSheet, startRowNum, globalInfo
+        )
         if (lastDebriefing != null && lastDebriefing != debrief) {
             formatError("Debriefings don't match: $lastDebriefing VS $debrief")
         }
@@ -55,9 +60,7 @@ private fun parseInterviews(workbook: Workbook, globalInfo: GlobalInfo): Pair<Li
 }
 
 private fun parseInterviewTable(
-    sheet: Sheet,
-    startRowNum: Int,
-    globalInfo: GlobalInfo
+    sheet: Sheet, startRowNum: Int, globalInfo: GlobalInfo
 ): Pair<List<Interview>, Debriefing> {
     val (firstNames, lastNames) = parseInterviewerNames(sheet, startRowNum)
     val nbInterviewers = firstNames.size
@@ -98,7 +101,7 @@ private fun parseTeamsIfPresent(sheet: Sheet, rowNum: Int, nbInterviewers: Int):
     if (!teamRow.startsWith("Team")) {
         return null
     }
-    val teams = listAfterHeader(teamRow).map { it.nullifyIfEmpty() }.take(nbInterviewers)
+    val teams = listAfterHeader(teamRow).take(nbInterviewers).map { it.nullifyIfEmpty() }
     if (teams.size < nbInterviewers) {
         formatError("There are only ${teams.size} teams, but $nbInterviewers interviewers", rowNum)
     }
@@ -112,7 +115,9 @@ private fun parseRooms(sheet: Sheet, rowNum: Int, nbInterviewers: Int): List<Roo
     if (!row.startsWith("Room")) {
         formatError("Expected 'Room' in the first cell, found '${row.firstContent()}'", rowNum)
     }
-    val rooms = listAfterHeader(row).take(nbInterviewers).mapIndexed { col, text -> parseRoom(text, rowNum, col) }
+    val rooms = listAfterHeader(row).take(nbInterviewers).mapIndexed { col, text ->
+        parseRoom(text, rowNum, col)
+    }
     if (rooms.size < nbInterviewers) {
         formatError("There are only ${rooms.size} rooms, but $nbInterviewers interviewers", rowNum)
     }
@@ -135,8 +140,8 @@ private fun buildInterviewers(
     globalInfo: GlobalInfo
 ): List<Employee> = firstNames.indices.map {
     Employee(
-        firstNames[it],
-        lastNames[it],
+        firstName = firstNames[it],
+        lastName = lastNames[it],
         jobTitle = jobTitles[it],
         division = globalInfo.divisionName,
         subdivision = globalInfo.subdivisionName,
@@ -155,21 +160,18 @@ private fun splitFullName(fullName: String, row: Int, col: Int): Pair<String, St
 }
 
 private fun buildInterviews(
-    sheet: Sheet,
-    startRowNum: Int,
-    interviewers: List<Employee>,
-    rooms: List<Room>
+    sheet: Sheet, startRowNum: Int, interviewers: List<Employee>, rooms: List<Room>
 ): Pair<List<Interview>, Debriefing> {
     val interviews = mutableListOf<Interview>()
     var rowNum = startRowNum
-    var halfDay = HalfDay.MORNING
+    var beforeLunch = true
     while (true) {
         val row = sheet.getRow(rowNum) ?: error("Reached the end of the document without finding the DEBRIEFING")
         val timeSlot = getTimeSlotText(row)
         val firstData = row.secondContent()
         if (timeSlot == "LUNCH" || firstData == "LUNCH") {
             rowNum++
-            halfDay = HalfDay.AFTERNOON
+            beforeLunch = false
             continue
         }
         val (startTime, endTime) = parseTimeSlot(timeSlot, rowNum)
@@ -183,10 +185,14 @@ private fun buildInterviews(
         candidateNames.forEachIndexed { i, name ->
             if (name != null) {
                 val (firstName, lastName) = splitFullName(name, rowNum, i + 1)
-                val candidate = Candidate(firstName, lastName, 8 h 0, 17 h 0)
-                val interviewer = interviewers[i]
-                val room = rooms[i]
-                val interview = Interview(startTime, endTime, candidate, interviewer, room, halfDay)
+                val interview = Interview(
+                    start = startTime,
+                    end = endTime,
+                    candidate = Candidate(firstName, lastName, 8 h 0, 17 h 0),
+                    interviewer = interviewers[i],
+                    room = rooms[i],
+                    isBeforeLunch = beforeLunch
+                )
                 interviews.add(interview)
             }
         }

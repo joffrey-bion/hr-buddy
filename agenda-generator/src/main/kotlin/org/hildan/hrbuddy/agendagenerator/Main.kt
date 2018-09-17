@@ -1,22 +1,22 @@
-package org.hildan.agenda.generator
+package org.hildan.hrbuddy.agendagenerator
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.SystemExitException
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
-import org.hildan.agenda.generator.planning.parsePlanning
+import org.hildan.hrbuddy.agendagenerator.planningparser.PlanningFormatException
 import java.io.File
 
-class Config(parser: ArgParser) {
+class CliConfig(parser: ArgParser) : Config {
 
-    val planningFile: File by parser.positional("PLANNING", "planning file") { File(this) }
+    override val planningFile: File by parser.positional("PLANNING", "planning file") { File(this) }
         .addValidator {
             if (!value.exists()) {
                 throw SystemExitException("Planning Excel file not found: ${value.absolutePath}", 1)
             }
         }
 
-    val templateFile: File? by parser.storing("-t", "--template", help = "template for agendas") { File(this) }
+    override val templateFile: File? by parser.storing("-t", "--template", help = "template for agendas") { File(this) }
         .default<File?>(null)
         .addValidator {
             val file = if (value == null) return@addValidator else value!!
@@ -31,27 +31,23 @@ class Config(parser: ArgParser) {
             }
         }
 
-    val outputDir: File by parser.storing("-o", "--outputDir", help = "output directory for agendas") { File(this) }
+    override val outputDir: File by parser.storing("-o", "--outDir", help = "agendas output directory") { File(this) }
         .default(File("agendas"))
         .addValidator {
             if (!value.exists()) {
                 value.mkdir()
             }
             if (!value.isDirectory) {
-                throw SystemExitException(
-                    "Invalid output directory, the given path points to an existing file: ${value.absolutePath}",
-                    1
-                )
+                val msg = "Invalid output directory, the given path points to an existing file: ${value.absolutePath}"
+                throw SystemExitException(msg, 1)
             }
         }
 }
 
 fun main(args: Array<String>) = mainBody {
-    ArgParser(args).parseInto(::Config).run {
-        val planning = parsePlanning(planningFile)
-        val agendas = planning.toAgendas()
-        val agendaWriter = AgendaWriter(templateFile, outputDir)
-
-        agendas.forEach { agendaWriter.write(it) }
+    try {
+        generateAgendas(ArgParser(args).parseInto(::CliConfig))
+    } catch (e: PlanningFormatException) {
+        throw SystemExitException(e.message, 1)
     }
 }
