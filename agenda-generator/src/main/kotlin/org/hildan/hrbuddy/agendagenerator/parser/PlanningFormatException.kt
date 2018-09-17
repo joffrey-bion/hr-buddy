@@ -1,4 +1,4 @@
-package org.hildan.hrbuddy.agendagenerator.planningparser
+package org.hildan.hrbuddy.agendagenerator.parser
 
 open class PlanningFormatException(
     override val message: String,

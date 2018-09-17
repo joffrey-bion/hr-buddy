@@ -4,7 +4,7 @@ import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.SystemExitException
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
-import org.hildan.hrbuddy.agendagenerator.planningparser.PlanningFormatException
+import org.hildan.hrbuddy.agendagenerator.parser.PlanningFormatException
 import java.io.File
 
 class CliConfig(parser: ArgParser) : Config {

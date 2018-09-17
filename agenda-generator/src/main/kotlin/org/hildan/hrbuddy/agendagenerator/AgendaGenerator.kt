@@ -1,6 +1,6 @@
 package org.hildan.hrbuddy.agendagenerator
 
-import org.hildan.hrbuddy.agendagenerator.planningparser.parsePlanning
+import org.hildan.hrbuddy.agendagenerator.parser.parsePlanning
 import java.io.File
 
 interface Config {
