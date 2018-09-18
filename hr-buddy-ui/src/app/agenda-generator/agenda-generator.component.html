@@ -1,0 +1,13 @@
+<mat-card>
+    <mat-card-title>Agenda Generator</mat-card-title>
+
+    <form (submit)="onSubmit()">
+        <label for="planningFile">Excel planning file:</label>
+        <button mat-raised-button color="primary" (click)="fileInput.click()">Select...</button>
+        <input hidden id="planningFile" name="planningFile" type="file" #fileInput
+               (change)="handleFileInput($event.target.files)">
+        <span *ngIf="planningFile != null">({{planningFile.name}})</span>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="planningFile == null">Generate</button>
+    </form>
+</mat-card>
