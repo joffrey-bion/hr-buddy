@@ -13,9 +13,12 @@ import org.hildan.hrbuddy.agendagenerator.model.Planning
 import org.hildan.hrbuddy.agendagenerator.model.Room
 import org.hildan.hrbuddy.agendagenerator.model.h
 import java.io.File
+import java.io.InputStream
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+
+fun parsePlanning(planningExcel: InputStream): Planning = XSSFWorkbook(planningExcel).use(::parsePlanning)
 
 fun parsePlanning(planningExcelFile: File): Planning = XSSFWorkbook(planningExcelFile).use(::parsePlanning)
 

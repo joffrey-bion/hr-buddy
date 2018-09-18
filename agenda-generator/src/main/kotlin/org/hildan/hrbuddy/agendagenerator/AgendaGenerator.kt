@@ -2,6 +2,7 @@ package org.hildan.hrbuddy.agendagenerator
 
 import org.hildan.hrbuddy.agendagenerator.parser.parsePlanning
 import java.io.File
+import java.io.InputStream
 
 interface Config {
     val planningFile: File
@@ -11,10 +12,14 @@ interface Config {
 
 fun generateAgendas(config: Config) {
     config.run {
-        val planning = parsePlanning(planningFile)
-        val agendas = planning.toAgendas()
-        val agendaWriter = AgendaWriter(templateFile, outputDir)
-
-        agendas.forEach { agendaWriter.write(it) }
+        generateAgendas(planningFile.inputStream(), outputDir, templateFile)
     }
+}
+
+fun generateAgendas(planningExcel: InputStream, outputDir: File, templateFile: File? = null): List<File> {
+    val planning = parsePlanning(planningExcel)
+    val agendas = planning.toAgendas()
+    val agendaWriter = AgendaWriter(templateFile, outputDir)
+
+    return agendas.map { agendaWriter.write(it) }
 }

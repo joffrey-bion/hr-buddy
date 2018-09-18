@@ -16,12 +16,13 @@ class AgendaWriter(
 
     constructor(templateFile: File?, outputDir: File) : this(templateProvider(templateFile), outputDir)
 
-    fun write(agenda: Agenda, outputFilename: String = filename(agenda)) {
-        outputDir.resolve(outputFilename).outputStream().use {
+    fun write(agenda: Agenda, outputFilename: String = filename(agenda)): File {
+        val outputFile = outputDir.resolve(outputFilename)
+        outputFile.outputStream().use {
             val context = JContext().apply { this.a = agenda }
             stamper.stamp(templateProvider(), context, it)
-            println("Agenda generated as $outputFilename")
         }
+        return outputFile
     }
 
     private fun filename(agenda: Agenda): String =
