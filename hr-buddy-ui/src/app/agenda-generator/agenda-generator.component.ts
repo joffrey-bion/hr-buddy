@@ -1,12 +1,12 @@
-import {HttpClient} from '@angular/common/http';
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
+import {GenerateAgendasResponse, HrBuddyClient} from '../hr-buddy-client.service';
 
 @Component({
   selector: 'app-agenda-generator',
   templateUrl: './agenda-generator.component.html',
   styleUrls: ['./agenda-generator.component.css'],
 })
-export class AgendaGeneratorComponent implements OnInit {
+export class AgendaGeneratorComponent {
 
   planningFile?: File = null;
 
@@ -16,10 +16,7 @@ export class AgendaGeneratorComponent implements OnInit {
 
   error?: string = null;
 
-  constructor(private http: HttpClient) {
-  }
-
-  ngOnInit() {
+  constructor(private hrBuddyClient: HrBuddyClient) {
   }
 
   handleFileInput(files: File[]) {
@@ -31,22 +28,12 @@ export class AgendaGeneratorComponent implements OnInit {
     this.error = null;
     this.downloadUrl = null;
 
-    const endpoint = 'http://localhost:8080/planning';
-    const formData: FormData = new FormData();
-    formData.append('planningFile', this.planningFile, this.planningFile.name);
-
-    return this.http.post<SendPlanningResponse>(endpoint, formData, {}).toPromise()
-        .then((data) => {
+    return this.hrBuddyClient.generateAgendas(this.planningFile)
+        .then((data: GenerateAgendasResponse) => {
           this.error = data.error;
           this.downloadUrl = data.downloadUrl;
         })
         .catch((e) => this.error = e.message)
         .then(() => this.loading = false);
   }
-
-}
-
-interface SendPlanningResponse {
-  downloadUrl?: string,
-  error?: string,
 }
