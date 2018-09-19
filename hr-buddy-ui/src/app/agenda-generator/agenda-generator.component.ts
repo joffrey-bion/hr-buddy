@@ -12,7 +12,9 @@ export class AgendaGeneratorComponent implements OnInit {
 
   loading: boolean = false;
 
-  error?: Error = null;
+  downloadUrl?: string = null;
+
+  error?: string = null;
 
   constructor(private http: HttpClient) {
   }
@@ -27,17 +29,24 @@ export class AgendaGeneratorComponent implements OnInit {
   onSubmit() {
     this.loading = true;
     this.error = null;
+    this.downloadUrl = null;
 
     const endpoint = 'http://localhost:8080/planning';
     const formData: FormData = new FormData();
     formData.append('planningFile', this.planningFile, this.planningFile.name);
 
-    return this.http.post(endpoint, formData, {
-      responseType: 'arraybuffer',
-    }).toPromise()
-        .then(() => console.log('hey!'))
-        .catch((e) => this.error = e)
+    return this.http.post<SendPlanningResponse>(endpoint, formData, {}).toPromise()
+        .then((data) => {
+          this.error = data.error;
+          this.downloadUrl = data.downloadUrl;
+        })
+        .catch((e) => this.error = e.message)
         .then(() => this.loading = false);
   }
 
+}
+
+interface SendPlanningResponse {
+  downloadUrl?: string,
+  error?: string,
 }

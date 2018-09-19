@@ -10,7 +10,10 @@
   <button type="submit" [disabled]="planningFile == null" (click)="onSubmit()">Generate</button>
 
   <p *ngIf="error != null">
-    {{error.message}}
+    {{error}}
+  </p>
+  <p *ngIf="downloadUrl != null">
+    <a href="{{downloadUrl}}">Download agendas</a>
   </p>
   <p *ngIf="loading">
       Loading, please wait...
