@@ -18,11 +18,11 @@ class AgendaGeneratorController {
     @PostMapping("/planning")
     @CrossOrigin(origins = ["*"])
     @ResponseBody
-    fun sendPlanningFile(file: MultipartFile, session: HttpSession): FileSystemResource {
+    fun sendPlanningFile(planningFile: MultipartFile, session: HttpSession): FileSystemResource {
 
-        println("Received ${file.originalFilename}")
+        println("Received ${planningFile.originalFilename}")
         val agendasDir = createTempDir("agendas-", "")
-        generateAgendas(file.inputStream, agendasDir)
+        generateAgendas(planningFile.inputStream, agendasDir)
 
         val zipFile = createTempFile("agendas-", ".zip")
         zipFile.deleteOnExit()
