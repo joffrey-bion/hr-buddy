@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession
 @Controller
 class AgendaGeneratorController {
 
-    @PostMapping("/planning")
+    @PostMapping("/planning", produces = ["application/octet-stream"])
     @CrossOrigin(origins = ["*"])
     @ResponseBody
     fun sendPlanningFile(planningFile: MultipartFile, session: HttpSession): FileSystemResource {
