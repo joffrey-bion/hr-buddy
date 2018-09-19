@@ -1,9 +1,15 @@
 allprojects {
     group = 'org.hildan.hrbuddy'
     version = '1.0.0'
+    ext.labels = ['hr', 'buddy', 'planning', 'agenda']
+    ext.licenses = ['MIT']
 
     repositories {
         mavenCentral()
     }
+}
+
+ext {
+    dockerUser = getPropOrEnv('dockerUser', 'DOCKER_USER')
 }
 
