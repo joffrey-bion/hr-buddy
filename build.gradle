@@ -9,6 +9,13 @@ allprojects {
     }
 }
 
+def getPropOrEnv = { String prop, String envVar, String defaultValue = null ->
+    if (project.hasProperty(prop)) {
+        return project.property(prop)
+    }
+    return System.getenv(envVar) ?: defaultValue
+}
+
 ext {
     dockerUser = getPropOrEnv('dockerUser', 'DOCKER_USER')
 }
