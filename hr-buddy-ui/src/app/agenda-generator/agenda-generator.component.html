@@ -1,13 +1,16 @@
-<section>
-  <h2>Agenda Generator</h2>
-
-  <label for="planningFile">Excel planning file:</label>
-  <button (click)="fileInput.click()">Select...</button>
-  <input hidden id="planningFile" name="planningFile" type="file" #fileInput
-          (change)="handleFileInput($event.target.files)">
-  <span *ngIf="planningFile != null">({{planningFile.name}})</span>
-
-  <button type="submit" [disabled]="planningFile == null" (click)="onSubmit()">Generate</button>
+<section class="card">
+  <h2 class="card-title">Agenda Generator</h2>
+  <p>
+    <label for="planningFile">Excel planning file:</label>
+    <button class="btn btn-primary" (click)="fileInput.click()">Select...</button>
+    <input hidden id="planningFile" name="planningFile" type="file" #fileInput
+           (change)="handleFileInput($event.target.files)">
+    <span *ngIf="planningFile != null">({{planningFile.name}})</span>
+  </p>
+  <p>
+    <button class="btn btn-primary" type="submit" [disabled]="planningFile == null" (click)="onSubmit()">Generate
+    </button>
+  </p>
 
   <p *ngIf="error != null">
     {{error}}
@@ -16,6 +19,6 @@
     <a href="{{downloadUrl}}">Download agendas</a>
   </p>
   <p *ngIf="loading">
-      Loading, please wait...
+    Loading, please wait...
   </p>
 </section>
