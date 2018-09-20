@@ -1,2 +1,3 @@
 include 'agenda-generator'
 include 'hr-buddy-server'
+include 'hr-buddy-ui'

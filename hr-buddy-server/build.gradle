@@ -48,6 +48,16 @@ dependencies {
     testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
+// packages the frontend app within the jar
+jar {
+    from('../hr-buddy-ui/build') {
+        into 'static'
+    }
+}
+
+// make sure we build the frontend before creating the jar
+jar.dependsOn(':hr-buddy-ui:assemble')
+
 docker {
     name "${rootProject.dockerUser}/${jar.baseName}"
     tags 'latest', "${project.version}"
