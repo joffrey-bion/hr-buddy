@@ -42,27 +42,26 @@ dependencies {
     compile project(':agenda-generator')
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     compile 'org.jetbrains.kotlin:kotlin-reflect'
-    compile("org.springframework.boot:spring-boot-starter-hateoas")
+    compile 'org.springframework.boot:spring-boot-starter-hateoas'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 // packages the frontend app within the jar
-jar {
-    from('../hr-buddy-ui/build') {
+bootJar {
+    from('../hr-buddy-ui/dist/hr-buddy-ui') {
         into 'static'
     }
 }
-
 // make sure we build the frontend before creating the jar
-jar.dependsOn(':hr-buddy-ui:assemble')
+bootJar.dependsOn(':hr-buddy-ui:assemble')
 
 docker {
-    name "${rootProject.dockerUser}/${jar.baseName}"
+    name "${rootProject.dockerUser}/${bootJar.baseName}"
     tags 'latest', "${project.version}"
     files jar.archivePath
-    buildArgs(['JAR_FILE': "${jar.archiveName}"])
+    buildArgs(['JAR_FILE': "${bootJar.archiveName}"])
 }
 tasks.docker.dependsOn(tasks.build)
 tasks.dockerPush.dependsOn { tasks.dockerTag }
