@@ -33,7 +33,7 @@ export class AgendaGeneratorComponent {
           this.error = AgendaGeneratorComponent.formatErrorMsg(data.error);
           this.downloadUrl = data.downloadUrl;
         })
-        .catch((e) => this.error = e.message)
+        .catch((e) => this.error = `There was a problem contacting the server: ${e.message}`)
         .then(() => this.loading = false);
   }
 
