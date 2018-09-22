@@ -36,4 +36,11 @@ export class AgendaGeneratorComponent {
         .catch((e) => this.error = e.message)
         .then(() => this.loading = false);
   }
+
+  resetForm() {
+    this.loading = false;
+    this.error = null;
+    this.downloadUrl = null;
+    this.planningFile = null;
+  }
 }
