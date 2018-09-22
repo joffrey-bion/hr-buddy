@@ -30,11 +30,18 @@ export class AgendaGeneratorComponent {
 
     return this.hrBuddyClient.generateAgendas(this.planningFile)
         .then((data: GenerateAgendasResponse) => {
-          this.error = data.error;
+          this.error = AgendaGeneratorComponent.formatErrorMsg(data.error);
           this.downloadUrl = data.downloadUrl;
         })
         .catch((e) => this.error = e.message)
         .then(() => this.loading = false);
+  }
+
+  private static formatErrorMsg(error?: string): string {
+    if (!error) {
+      return null;
+    }
+    return `Something is incorrect in the provided excel file:\n${error}`
   }
 
   resetForm() {

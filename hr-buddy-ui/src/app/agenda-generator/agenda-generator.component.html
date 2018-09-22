@@ -1,24 +1,34 @@
-<section class="agenda-generator card">
+<section class="card m-3 p-3">
   <h4 class="card-title">Agenda Generator</h4>
   <p>
-    <label for="planningFile" class="filepicker-label">Excel planning file:</label>
-    <button class="btn btn-primary btn-sm" (click)="fileInput.click()">Select...</button>
-    <input hidden id="planningFile" name="planningFile" type="file" #fileInput
-           (change)="handleFileInput($event.target.files)">
-    <span *ngIf="planningFile != null">({{planningFile.name}})</span>
+    This tool generates one personal agenda for each candidate as a Microsoft Word file, based on the given planning.
   </p>
   <p>
-    <button class="btn btn-success" type="submit" [disabled]="planningFile == null" (click)="onSubmit()">Generate
-    </button>
+    <label class="mr-2" for="planningFile">Excel planning file:</label>
+    <button class="btn btn-info btn-sm" (click)="fileInput.click()">Select...</button>
+    <input hidden id="planningFile" name="planningFile" type="file" #fileInput
+           (change)="handleFileInput($event.target.files)">
+    <span *ngIf="planningFile != null" class="ml-2">{{planningFile.name}}</span>
+  </p>
+  <p *ngIf="!loading">
+    <button class="btn btn-info"
+            type="submit"
+            title="Generate candidate agendas"
+            [disabled]="planningFile == null"
+            (click)="onSubmit()">Generate</button>
+  </p>
+  <p *ngIf="loading">
+    <ngb-progressbar type="info"
+                     value="100"
+                     [striped]="true"
+                     [animated]="true"
+                     height="38px">Loading, please wait...</ngb-progressbar>
   </p>
 
   <ngb-alert *ngIf="error != null" type="danger" (close)="resetForm()">
     {{error}}
   </ngb-alert>
-  <p *ngIf="downloadUrl != null">
-    <a href="{{downloadUrl}}">Download all agendas</a>
-  </p>
-  <p *ngIf="loading">
-    Loading, please wait...
-  </p>
+  <ngb-alert *ngIf="downloadUrl != null" type="success" (close)="resetForm()">
+    Done! You may now <a href="{{downloadUrl}}">download all agendas</a>.
+  </ngb-alert>
 </section>
