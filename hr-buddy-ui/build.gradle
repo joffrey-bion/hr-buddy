@@ -5,7 +5,7 @@ plugins {
 apply plugin: 'base'
 apply plugin: 'idea'
 
-buildDir = 'build'
+buildDir = 'dist/hr-buddy-ui'
 
 node {
     version = '8.11.1'
