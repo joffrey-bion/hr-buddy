@@ -32,3 +32,9 @@ deploy:
     on:
       all_branches: true
       tags: true
+  - provider: heroku
+    api_key:
+      secure: "XrZb0/OeT67hoeKzde1EwuFzAE/W3SLPs+PlIqT80a06WAN2+eRUZ0SszTVI+beuBDvY5vbuZCemA/i0OXqs316VUvrkaZw8CLo8vZqQ3foHsXl+r+w3RoFnQ2tzD+OTG/+cGJir4kfuAjP0ac162MIASsKGwd7eOP1oADiQ3YhyjjxTzG/kKiqYTRA5YKUuGzxN07y5fCxZIGoqUAPnMqmhEMbcUTsMMP3xRUq8GWqpxSBvdDoxPxvd3xnhMQsW5yVOpfz0CwAqCXk9BcJfihj0WTZcip3I+9H2bbMycM3cmDXhFMqVYA99MQf0jrNPn+eiG1J8n2web6bxt6NRNmMROjbMOp2QG/l8bWfV76L/npa1832t9RcOcYb2nLuH1Xf+HsBC0+4NkQAtCWoVVv20wJDMWaEGOjS0quniTM8UmVaKHdqGoED7LvNoW7QJfHjrDWJN27TmaCXhHyFm8WygCyottWvAR/Y3ew0DdsAR0KtHfR721lxfnihsQv9HzAXvJCXUnRCOKRxtcM1CUWZ38xKyu8HTqhwXLa9YFADVLNhCC/iASo874yeBFYvTtDdXWuV37UKUVPUGV+4VGaR5Cq9vkGR1kVaoNqmEZkW2rvahih9EUrxZynF6/7AuW8rnmOj0p4cY9ZByYyT1BgHOYoavZBfD7wM5tFjuPCI="
+    on:
+      branch: master
+    app: hr-buddy
