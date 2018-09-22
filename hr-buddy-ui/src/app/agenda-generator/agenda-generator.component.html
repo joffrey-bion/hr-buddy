@@ -5,30 +5,39 @@
   </p>
   <p>
     <label class="mr-2" for="planningFile">Excel planning file:</label>
-    <button class="btn btn-info btn-sm" (click)="fileInput.click()">Select...</button>
+    <button class="btn btn-info btn-sm" (click)="fileInput.click()">
+      <fa-icon icon="upload" class="mr-2"></fa-icon>Select...
+    </button>
     <input hidden id="planningFile" name="planningFile" type="file" #fileInput
            (change)="handleFileInput($event.target.files)">
-    <span *ngIf="planningFile != null" class="ml-2">{{planningFile.name}}</span>
+    <span *ngIf="planningFile != null" class="ml-3">
+      <fa-icon icon="file-excel" class="mr-1"></fa-icon>{{planningFile.name}}
+    </span>
   </p>
   <p *ngIf="!loading">
     <button class="btn btn-info"
             type="submit"
             title="Generate candidate agendas"
             [disabled]="planningFile == null"
-            (click)="onSubmit()">Generate</button>
+            (click)="onSubmit()">
+      <fa-icon icon="cogs" class="mr-2"></fa-icon>Generate
+    </button>
   </p>
   <p *ngIf="loading">
     <ngb-progressbar type="info"
                      value="100"
                      [striped]="true"
                      [animated]="true"
-                     height="38px">Loading, please wait...</ngb-progressbar>
+                     height="38px">
+      <span><fa-icon icon="clock" class="mr-2"></fa-icon>Loading, please wait...</span>
+    </ngb-progressbar>
   </p>
 
   <ngb-alert *ngIf="error != null" type="danger" (close)="resetForm()">
-    {{error}}
+    <fa-icon icon="exclamation-circle" class="mr-2"></fa-icon>{{error}}
   </ngb-alert>
   <ngb-alert *ngIf="downloadUrl != null" type="success" (close)="resetForm()">
+    <fa-icon icon="check-circle" class="mr-2"></fa-icon>
     Done! You may now <a href="{{downloadUrl}}">download all agendas</a>.
   </ngb-alert>
 </section>
