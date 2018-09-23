@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {GenerateAgendasResponse, HrBuddyClient} from '../hr-buddy-client.service';
 
 @Component({
@@ -16,17 +16,20 @@ export class AgendaGeneratorComponent {
 
   error?: string = null;
 
+  @ViewChild('fileInput')
+  fileInput: ElementRef;
+
   constructor(private hrBuddyClient: HrBuddyClient) {
   }
 
   handleFileInput(files: File[]) {
-    this.planningFile = files[0]
+    this.error = null;
+    this.downloadUrl = null;
+    this.planningFile = files[0];
   }
 
   onSubmit() {
     this.loading = true;
-    this.error = null;
-    this.downloadUrl = null;
 
     return this.hrBuddyClient.generateAgendas(this.planningFile)
         .then((data: GenerateAgendasResponse) => {
@@ -45,9 +48,11 @@ export class AgendaGeneratorComponent {
   }
 
   resetForm() {
-    this.loading = false;
+    this.planningFile = null;
     this.error = null;
     this.downloadUrl = null;
-    this.planningFile = null;
+    this.loading = false;
+    // the only way of clearing the actual file input (https://stackoverflow.com/a/40165524/1540818)
+    this.fileInput.nativeElement.value = "";
   }
 }
