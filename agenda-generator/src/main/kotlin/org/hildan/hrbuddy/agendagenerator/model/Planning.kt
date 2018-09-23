@@ -11,7 +11,7 @@ data class Planning(
     fun toAgendas(): List<Agenda> = interviews.groupBy { it.candidate }.map { (c, slots) -> createAgenda(c, slots) }
 
     private fun createAgenda(candidate: Candidate, interviews: List<Interview>): Agenda {
-        val (morningInts, afternoonInts) = interviews.partition { it.isBeforeLunch }
+        val (morningInts, afternoonInts) = interviews.sortedBy { it.start }.partition { it.isBeforeLunch }
         return Agenda(
             globalInfo.date, candidate, candidate.morningTaxiTime, candidate.eveningTaxiTime, morningInts, afternoonInts
         )
