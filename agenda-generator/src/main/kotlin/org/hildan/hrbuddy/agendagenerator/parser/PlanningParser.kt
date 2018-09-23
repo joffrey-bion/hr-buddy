@@ -19,8 +19,12 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 fun parsePlanning(planningExcel: InputStream): Planning {
+    return getWorkbook(planningExcel).use(::parsePlanning)
+}
+
+private fun getWorkbook(planningExcel: InputStream): XSSFWorkbook {
     try {
-        return XSSFWorkbook(planningExcel).use(::parsePlanning)
+        return XSSFWorkbook(planningExcel)
     } catch (e: Exception) {
         formatError("Invalid file format: ${e.message}")
     }
