@@ -45,5 +45,3 @@ class Room(
         return result
     }
 }
-
-infix fun Int.h(minutes: Int): LocalTime = LocalTime.of(this, minutes)

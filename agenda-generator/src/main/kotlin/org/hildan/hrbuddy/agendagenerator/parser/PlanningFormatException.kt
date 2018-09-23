@@ -1,11 +1,15 @@
 package org.hildan.hrbuddy.agendagenerator.parser
 
+import org.apache.poi.ss.usermodel.Cell
+
 open class PlanningFormatException(
     override val message: String,
     val row: Int?,
     val col: Char?,
     val cell: String?
 ) : Exception(message)
+
+internal fun formatError(message: String, cell: Cell): Nothing = formatError(message, cell.rowIndex, cell.columnIndex)
 
 internal fun formatError(message: String, rowIndex: Int? = null, colIndex: Int? = null): Nothing {
     val row: Int? = if (rowIndex == null) null else rowIndex + 1
