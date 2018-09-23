@@ -40,6 +40,8 @@ class AgendaGeneratorController @Autowired constructor(
             generateAgendas(planningFile.inputStream, agendasDir)
         } catch (e: PlanningFormatException) {
             return SendPlanningResponse(null, e.message)
+        } catch (e: Exception) {
+            return SendPlanningResponse(null, "An unexpected error occurred: ${e.message}")
         }
 
         val zipFile = createTempFile("agendas-", ".zip")

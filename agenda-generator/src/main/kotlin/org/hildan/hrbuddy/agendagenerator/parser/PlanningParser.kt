@@ -18,9 +18,13 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
-fun parsePlanning(planningExcel: InputStream): Planning = XSSFWorkbook(planningExcel).use(::parsePlanning)
-
-fun parsePlanning(planningExcelFile: File): Planning = XSSFWorkbook(planningExcelFile).use(::parsePlanning)
+fun parsePlanning(planningExcel: InputStream): Planning {
+    try {
+        return XSSFWorkbook(planningExcel).use(::parsePlanning)
+    } catch (e: Exception) {
+        formatError("Invalid file format: ${e.message}")
+    }
+}
 
 private fun parsePlanning(workbook: Workbook): Planning {
     val globalInfo = parseGlobalInfo(workbook)

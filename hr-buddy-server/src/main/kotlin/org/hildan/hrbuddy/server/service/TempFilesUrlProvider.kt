@@ -1,6 +1,5 @@
 package org.hildan.hrbuddy.server.service
 
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import java.io.File
 import java.util.UUID
