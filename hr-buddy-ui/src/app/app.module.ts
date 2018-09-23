@@ -9,6 +9,7 @@ import {
   faCheckCircle,
   faClock,
   faCogs,
+  faDownload,
   faExclamationCircle,
   faFileExcel,
   faUpload,
@@ -21,6 +22,7 @@ library.add(faBug);
 library.add(faCheckCircle);
 library.add(faClock);
 library.add(faCogs);
+library.add(faDownload);
 library.add(faExclamationCircle);
 library.add(faFileExcel);
 library.add(faUpload);

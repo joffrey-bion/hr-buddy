@@ -14,9 +14,8 @@
       <fa-icon icon="file-excel" class="mr-1"></fa-icon>{{planningFile.name}}
     </span>
   </p>
-  <p *ngIf="!loading">
+  <p *ngIf="!loading && downloadUrl == null">
     <button class="btn btn-info"
-            type="submit"
             title="Generate candidate agendas"
             [disabled]="planningFile == null"
             (click)="onSubmit()">
@@ -32,12 +31,19 @@
       <span><fa-icon icon="clock" class="mr-2"></fa-icon>Loading, please wait...</span>
     </ngb-progressbar>
   </p>
+  <p *ngIf="downloadUrl != null">
+    <a class="btn btn-info" title="Download all agendas" href="{{downloadUrl}}">
+      <fa-icon icon="download" class="mr-2"></fa-icon>Download</a>
+    <button class="btn btn-outline-info ml-2"
+            title="Clear agendas"
+            (click)="resetForm()">Clear</button>
+  </p>
 
   <ngb-alert *ngIf="error != null" type="danger" (close)="resetForm()">
     <fa-icon icon="exclamation-circle" class="mr-2"></fa-icon>{{error}}
   </ngb-alert>
   <ngb-alert *ngIf="downloadUrl != null" type="success" (close)="resetForm()">
     <fa-icon icon="check-circle" class="mr-2"></fa-icon>
-    Done! You may now <a href="{{downloadUrl}}">download all agendas</a>.
+    Your agendas are ready! Click the download button to get them.
   </ngb-alert>
 </section>
