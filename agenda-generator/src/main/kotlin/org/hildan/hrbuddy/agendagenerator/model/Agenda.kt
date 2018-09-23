@@ -22,10 +22,9 @@ class Interview(
 )
 
 class Room(
-    val code: String,
     val name: String
 ) {
-    override fun toString() = "$code-$name"
+    override fun toString() = name
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -33,15 +32,12 @@ class Room(
 
         other as Room
 
-        if (code != other.code) return false
         if (name != other.name) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = code.hashCode()
-        result = 31 * result + name.hashCode()
-        return result
+        return name.hashCode()
     }
 }

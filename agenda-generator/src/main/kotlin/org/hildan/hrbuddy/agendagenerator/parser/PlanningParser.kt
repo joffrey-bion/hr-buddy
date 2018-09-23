@@ -153,21 +153,11 @@ private class InterviewParser(
         if (!row.startsWith("Room")) {
             formatError("Expected 'Room' in the first cell, found '${row.firstContent()}'", rowNum)
         }
-        val rooms = listAfterHeader(row).take(nbInterviewers).mapIndexed { col, text ->
-            parseRoom(text, rowNum, col)
-        }
+        val rooms = listAfterHeader(row).take(nbInterviewers).map(::Room)
         if (rooms.size < nbInterviewers) {
             formatError("There are only ${rooms.size} rooms, but $nbInterviewers interviewers", rowNum)
         }
         return rooms
-    }
-
-    private fun parseRoom(text: String, row: Int, col: Int): Room {
-        if (!text.contains("-")) {
-            formatError("Expected room name in the form 'code-name', found '$text'", row, col)
-        }
-        val (code, name) = text.split("-")
-        return Room(code, name)
     }
 
     private fun buildInterviewers(
@@ -253,7 +243,7 @@ private class InterviewParser(
         val roomMatch = regex.matchEntire(firstData)
             ?: formatError("Expected debriefing data like 'DEBRIEFING (room)', got '$firstData'", rowNum, 1)
         val roomText = roomMatch.groupValues[1]
-        val room = parseRoom(roomText, rowNum, 1)
+        val room = Room(roomText)
         return Debriefing(start, end, room)
     }
 }
