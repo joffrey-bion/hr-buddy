@@ -1,4 +1,5 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
+import {environment} from '../../environments/environment';
 import {GenerateAgendasResponse, HrBuddyClient} from '../hr-buddy-client.service';
 
 @Component({
@@ -7,6 +8,8 @@ import {GenerateAgendasResponse, HrBuddyClient} from '../hr-buddy-client.service
   styleUrls: ['./agenda-generator.component.css'],
 })
 export class AgendaGeneratorComponent {
+
+  examplePlanningUrl: string = `${environment.serverUrl}/example-planning.xlsx`;
 
   planningFile?: File = null;
 
