@@ -3,8 +3,7 @@ package org.hildan.hrbuddy.agendagenerator.model
 import java.time.LocalTime
 
 open class Person(
-    val firstName: String,
-    val lastName: String
+    val firstName: String, val lastName: String
 ) {
     val fullName: String = "$firstName ${lastName.toUpperCase()}"
 
@@ -32,10 +31,7 @@ open class Person(
 }
 
 class Candidate(
-    firstName: String,
-    lastName: String,
-    val morningTaxiTime: LocalTime,
-    val eveningTaxiTime: LocalTime
+    firstName: String, lastName: String, val morningTaxiTime: LocalTime, val eveningTaxiTime: LocalTime
 ) : Person(firstName, lastName) {
 
     override fun equals(other: Any?): Boolean {
@@ -63,12 +59,15 @@ class Employee(
     firstName: String,
     lastName: String,
     val jobTitle: String,
-    val division: String? = null,
-    val subdivision: String? = null,
+    val division: Division? = null,
+    val subdivision: Division? = null,
     val team: String? = null
 ) : Person(firstName, lastName) {
 
-    val description: String = jobTitle dash team dash division dash subdivision
+    private val divCodes: String? =
+        if (division != null && subdivision != null) " (${division.code}/${subdivision.code})" else ""
+
+    val description: String = jobTitle dash team dash division?.name dash subdivision?.name + divCodes
 
     private infix fun String.dash(suffix: String?) = if (suffix == null) {
         this

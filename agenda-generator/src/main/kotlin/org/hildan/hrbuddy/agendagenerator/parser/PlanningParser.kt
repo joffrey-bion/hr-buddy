@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.hildan.hrbuddy.agendagenerator.model.Candidate
 import org.hildan.hrbuddy.agendagenerator.model.Debriefing
+import org.hildan.hrbuddy.agendagenerator.model.Division
 import org.hildan.hrbuddy.agendagenerator.model.Employee
 import org.hildan.hrbuddy.agendagenerator.model.GlobalInfo
 import org.hildan.hrbuddy.agendagenerator.model.Interview
@@ -16,9 +17,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
-fun parsePlanning(planningExcel: InputStream): Planning {
-    return getWorkbook(planningExcel).use(::parsePlanning)
-}
+fun parsePlanning(planningExcel: InputStream): Planning = getWorkbook(planningExcel).use(::parsePlanning)
 
 private fun getWorkbook(planningExcel: InputStream): XSSFWorkbook {
     try {
@@ -38,12 +37,19 @@ private fun parsePlanning(workbook: Workbook): Planning {
 
 private fun parseGlobalInfo(workbook: Workbook): GlobalInfo {
     val globalInfoSheet = workbook.getMandatorySheet("Global info")
+
+    val divisionCode = getStringData(globalInfoSheet, "Division Code")
+    val divisionName = getStringData(globalInfoSheet, "Division Name")
+    val division = Division(divisionCode, divisionName)
+
+    val subdivisionCode = getStringData(globalInfoSheet, "Subdivision Code")
+    val subdivisionName = getStringData(globalInfoSheet, "Subdivision Name")
+    val subdivision = Division(subdivisionCode, subdivisionName)
+
     return GlobalInfo(
         date = getDateData(globalInfoSheet, "Date"),
-        divisionCode = getStringData(globalInfoSheet, "Division Code"),
-        divisionName = getStringData(globalInfoSheet, "Division Name"),
-        subdivisionCode = getStringData(globalInfoSheet, "Subdivision Code"),
-        subdivisionName = getStringData(globalInfoSheet, "Subdivision Name")
+        division = division,
+        subdivision = subdivision
     )
 }
 
@@ -167,8 +173,8 @@ private class InterviewParser(
             firstName = firstNames[it],
             lastName = lastNames[it],
             jobTitle = jobTitles[it],
-            division = globalInfo.divisionName,
-            subdivision = globalInfo.subdivisionName,
+            division = globalInfo.division,
+            subdivision = globalInfo.subdivision,
             team = teams?.get(it)
         )
     }

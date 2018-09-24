@@ -20,14 +20,17 @@ data class Planning(
 
 data class GlobalInfo(
     val date: LocalDate,
-    val divisionCode: String,
-    val divisionName: String,
-    val subdivisionCode: String,
-    val subdivisionName: String
+    val division: Division,
+    val subdivision: Division
 )
 
 data class Debriefing(
     val start: LocalTime,
     val end: LocalTime,
     val room: Room
+)
+
+data class Division(
+    val code: String,
+    val name: String
 )
