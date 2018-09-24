@@ -17,7 +17,12 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
-fun parsePlanning(planningExcel: InputStream): Planning = getWorkbook(planningExcel).use(::parsePlanning)
+data class PlanningParserOptions(
+    val noDivisionJobTitles: List<String> = listOf("RH Consultant", "Recruitment specialist")
+)
+
+fun parsePlanning(planningExcel: InputStream, options: PlanningParserOptions = PlanningParserOptions()): Planning =
+    getWorkbook(planningExcel).use { parsePlanning(it, options) }
 
 private fun getWorkbook(planningExcel: InputStream): XSSFWorkbook {
     try {
@@ -27,10 +32,10 @@ private fun getWorkbook(planningExcel: InputStream): XSSFWorkbook {
     }
 }
 
-private fun parsePlanning(workbook: Workbook): Planning {
+fun parsePlanning(workbook: Workbook, options: PlanningParserOptions = PlanningParserOptions()): Planning {
     val globalInfo = parseGlobalInfo(workbook)
     val candidates = parseCandidates(workbook)
-    val interviewParser = InterviewParser(globalInfo, candidates)
+    val interviewParser = InterviewParser(globalInfo, candidates, options)
     val (interviews, debriefing) = interviewParser.parseInterviews(workbook)
     return Planning(globalInfo, interviews, debriefing)
 }
@@ -80,7 +85,9 @@ private fun createCandidate(row: Row?): Candidate? {
 }
 
 private class InterviewParser(
-    private val globalInfo: GlobalInfo, private val candidates: Map<String, Candidate>
+    private val globalInfo: GlobalInfo,
+    private val candidates: Map<String, Candidate>,
+    private val options: PlanningParserOptions
 ) {
     fun parseInterviews(workbook: Workbook): Pair<List<Interview>, Debriefing> {
         val planningSheet = workbook.getSheetAt(0) ?: formatError("No sheet in the given excel file!")
@@ -169,15 +176,23 @@ private class InterviewParser(
     private fun buildInterviewers(
         firstNames: List<String>, lastNames: List<String>, jobTitles: List<String>, teams: List<String?>?
     ): List<Employee> = firstNames.indices.map {
+        val jobTitle = jobTitles[it]
         Employee(
             firstName = firstNames[it],
             lastName = lastNames[it],
-            jobTitle = jobTitles[it],
-            division = globalInfo.division,
-            subdivision = globalInfo.subdivision,
+            jobTitle = jobTitle,
+            division = ifInDivision(jobTitle) { globalInfo.division },
+            subdivision = ifInDivision(jobTitle) { globalInfo.division },
             team = teams?.get(it)
         )
     }
+
+    private fun ifInDivision(jobTitle: String, getValue: () -> Division): Division? =
+        if (options.noDivisionJobTitles.contains(jobTitle)) {
+            null
+        } else {
+            getValue()
+        }
 
     private fun buildInterviews(
         sheet: Sheet, startRowNum: Int, interviewers: List<Employee>, rooms: List<Room>
