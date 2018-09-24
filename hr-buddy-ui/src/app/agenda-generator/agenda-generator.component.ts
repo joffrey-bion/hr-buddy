@@ -34,7 +34,11 @@ export class AgendaGeneratorComponent {
   onSubmit() {
     this.loading = true;
 
-    return this.hrBuddyClient.generateAgendas(this.planningFile)
+    const options = {
+      jobTitlesWithNoDivision: ["HR Consultant", "Recruitment specialist"]
+    };
+
+    return this.hrBuddyClient.generateAgendas(this.planningFile, options)
         .then((data: GenerateAgendasResponse) => {
           this.error = AgendaGeneratorComponent.formatErrorMsg(data.error);
           this.downloadUrl = data.downloadUrl;

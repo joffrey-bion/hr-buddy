@@ -21,7 +21,7 @@ data class PlanningParserOptions(
     val noDivisionJobTitles: List<String> = listOf("RH Consultant", "Recruitment specialist")
 )
 
-fun parsePlanning(planningExcel: InputStream, options: PlanningParserOptions = PlanningParserOptions()): Planning =
+fun parsePlanning(planningExcel: InputStream, options: PlanningParserOptions? = null): Planning =
     getWorkbook(planningExcel).use { parsePlanning(it, options) }
 
 private fun getWorkbook(planningExcel: InputStream): XSSFWorkbook {
@@ -32,10 +32,10 @@ private fun getWorkbook(planningExcel: InputStream): XSSFWorkbook {
     }
 }
 
-fun parsePlanning(workbook: Workbook, options: PlanningParserOptions = PlanningParserOptions()): Planning {
+fun parsePlanning(workbook: Workbook, options: PlanningParserOptions? = null): Planning {
     val globalInfo = parseGlobalInfo(workbook)
     val candidates = parseCandidates(workbook)
-    val interviewParser = InterviewParser(globalInfo, candidates, options)
+    val interviewParser = InterviewParser(globalInfo, candidates, options ?: PlanningParserOptions())
     val (interviews, debriefing) = interviewParser.parseInterviews(workbook)
     return Planning(globalInfo, interviews, debriefing)
 }

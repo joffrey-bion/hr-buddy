@@ -2,6 +2,7 @@ package org.hildan.hrbuddy.server.controllers
 
 import org.hildan.hrbuddy.agendagenerator.generateAgendas
 import org.hildan.hrbuddy.agendagenerator.parser.PlanningFormatException
+import org.hildan.hrbuddy.agendagenerator.parser.PlanningParserOptions
 import org.hildan.hrbuddy.server.service.SessionFileMap
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.FileSystemResource
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.multipart.MultipartFile
@@ -33,11 +35,15 @@ class AgendaGeneratorController @Autowired constructor(
     @PostMapping("/planning")
     @CrossOrigin(origins = ["*"])
     @ResponseBody
-    fun sendPlanningFile(planningFile: MultipartFile, session: HttpSession): SendPlanningResponse {
+    fun sendPlanningFile(
+        @RequestPart("planningFile") planningFile: MultipartFile,
+        @RequestPart("options") options: GeneratorOptions? = null,
+        session: HttpSession
+    ): AgendaGeneratorController.SendPlanningResponse {
 
         val agendasDir = createTempDir("agendas-", "")
         try {
-            generateAgendas(planningFile.inputStream, agendasDir)
+            generateAgendas(planningFile.inputStream, agendasDir, parserOptions = options?.parserOptions)
         } catch (e: PlanningFormatException) {
             return SendPlanningResponse(null, e.message)
         } catch (e: Exception) {
@@ -52,6 +58,12 @@ class AgendaGeneratorController @Autowired constructor(
         val fileId = sessionFileMap.addFile(zipFile)
         val fileUrl = getDownloadUrl(fileId)
         return SendPlanningResponse(fileUrl, null)
+    }
+
+    class GeneratorOptions(
+        val jobTitlesWithNoDivision: List<String>
+    ) {
+        val parserOptions = PlanningParserOptions(jobTitlesWithNoDivision)
     }
 
     private fun getDownloadUrl(fileId: String) =

@@ -11,10 +11,14 @@ export class HrBuddyClient {
   constructor(private http: HttpClient) {
   }
 
-  generateAgendas(planningFile: File): Promise<GenerateAgendasResponse> {
+  generateAgendas(planningFile: File, options: GenerationOptions): Promise<GenerateAgendasResponse> {
     const serverUrl = environment.serverUrl;
+
     const formData: FormData = new FormData();
     formData.append('planningFile', planningFile, planningFile.name);
+    formData.append('options', new Blob([JSON.stringify(options)], {
+      type: "application/json"
+    }));
 
     return this.http.post<GenerateAgendasResponse>(`${serverUrl}/planning`, formData, {}).toPromise()
   }
@@ -23,4 +27,8 @@ export class HrBuddyClient {
 export interface GenerateAgendasResponse {
   downloadUrl?: string,
   error?: string,
+}
+
+export interface GenerationOptions {
+  jobTitlesWithNoDivision?: string[],
 }
