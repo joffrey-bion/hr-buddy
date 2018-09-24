@@ -182,7 +182,7 @@ private class InterviewParser(
             lastName = lastNames[it],
             jobTitle = jobTitle,
             division = ifInDivision(jobTitle) { globalInfo.division },
-            subdivision = ifInDivision(jobTitle) { globalInfo.division },
+            subdivision = ifInDivision(jobTitle) { globalInfo.subdivision },
             team = teams?.get(it)
         )
     }
