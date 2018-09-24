@@ -3,10 +3,6 @@
     outline: 0;
 }
 
-.selected {
-    margin-right: 0.2rem;
-}
-
 .close-cross {
     cursor: pointer;
 }
