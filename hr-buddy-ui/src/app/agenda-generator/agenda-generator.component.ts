@@ -13,6 +13,8 @@ export class AgendaGeneratorComponent {
 
   planningFile?: File = null;
 
+  specialJobTitles: string[] = ["HR Consultant", "Recruitment Specialist"];
+
   loading: boolean = false;
 
   downloadUrl?: string = null;
@@ -35,7 +37,7 @@ export class AgendaGeneratorComponent {
     this.loading = true;
 
     const options = {
-      jobTitlesWithNoDivision: ["HR Consultant", "Recruitment Specialist"]
+      jobTitlesWithNoDivision: this.specialJobTitles
     };
 
     return this.hrBuddyClient.generateAgendas(this.planningFile, options)
@@ -56,6 +58,7 @@ export class AgendaGeneratorComponent {
 
   resetForm() {
     this.planningFile = null;
+    this.specialJobTitles = ["HR Consultant", "Recruitment Specialist"];
     this.error = null;
     this.downloadUrl = null;
     this.loading = false;

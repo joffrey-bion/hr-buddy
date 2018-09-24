@@ -1,0 +1,8 @@
+<div class="form-control p-1">
+  <span class="badge badge-secondary py-1 mr-2" *ngFor="let item of items">
+    {{item}}<span class="close-cross ml-1" aria-hidden="true" (click)="remove(item)">&times;</span>
+  </span>
+  <input #input type="text" class="seamless-input"
+         (keyup.enter)="add(input.value)"
+         [placeholder]="placeholder"/>
+</div>
