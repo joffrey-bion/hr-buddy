@@ -35,7 +35,7 @@ export class AgendaGeneratorComponent {
     this.loading = true;
 
     const options = {
-      jobTitlesWithNoDivision: ["HR Consultant", "Recruitment specialist"]
+      jobTitlesWithNoDivision: ["HR Consultant", "Recruitment Specialist"]
     };
 
     return this.hrBuddyClient.generateAgendas(this.planningFile, options)
