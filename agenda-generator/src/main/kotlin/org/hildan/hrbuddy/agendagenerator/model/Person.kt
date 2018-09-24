@@ -67,7 +67,7 @@ class Employee(
     private val divCodes: String? =
         if (division != null && subdivision != null) " (${division.code}/${subdivision.code})" else ""
 
-    val description: String = jobTitle dash team dash division?.name dash subdivision?.name + divCodes
+    val description: String = (jobTitle dash team dash division?.name dash subdivision?.name) + divCodes
 
     private infix fun String.dash(suffix: String?) = if (suffix == null) {
         this
