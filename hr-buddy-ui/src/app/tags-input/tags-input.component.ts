@@ -18,9 +18,11 @@ export class TagsInputComponent {
   constructor() {
   }
 
-  add(item) {
-    this.items.push(item);
-    this.inputEl.nativeElement.value = '';
+  add(item: string) {
+    if (item.length > 0) {
+      this.items.push(item);
+    }
+    this.clearInput();
   }
 
   remove(item: string) {
