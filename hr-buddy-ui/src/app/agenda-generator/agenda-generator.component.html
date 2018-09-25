@@ -7,64 +7,62 @@
     how to start.
   </p>
 
-  <form>
-    <div class="form-group">
-      <label class="mr-2" for="planningFile">Excel planning file:</label>
-      <button class="btn btn-info btn-sm"
-              [disabled]="loading"
-              (click)="fileInput.click()">
-        <fa-icon icon="upload" class="mr-2"></fa-icon>
-        Select...
-      </button>
-      <input hidden id="planningFile" name="planningFile" type="file" #fileInput
-             (change)="handleFileInput($event.target.files)">
-      <span *ngIf="planningFile != null" class="ml-3">
-      <fa-icon icon="file-excel" class="mr-1"></fa-icon>{{planningFile.name}}
-    </span>
-    </div>
+  <div class="form-group">
+    <label class="mr-2" for="planningFile">Excel planning file:</label>
+    <button class="btn btn-info btn-sm"
+            [disabled]="loading"
+            (click)="fileInput.click()">
+      <fa-icon icon="upload" class="mr-2"></fa-icon>
+      Select...
+    </button>
+    <input hidden id="planningFile" name="planningFile" type="file" #fileInput
+           (change)="handleFileInput($event.target.files)">
+    <span *ngIf="planningFile != null" class="ml-3">
+    <fa-icon icon="file-excel" class="mr-1"></fa-icon>{{planningFile.name}}
+  </span>
+  </div>
 
-    <div class="form-group mb-4">
-      <label class="mr-2" for="specialJobTitles">Jobs outside the rec day's division
-        <fa-icon icon="question-circle" [ngbTooltip]="tipContent"></fa-icon>
-      </label>
-      <ng-template #tipContent>
-        The global division/subdivision will not appear in the agenda for interviewers with the specified job
-        titles.<br>
-        This is useful for HR interviewers.
-      </ng-template>
-      <app-tags-input id="specialJobTitles" [(items)]="specialJobTitles"
-                      placeholder="custom job title..."></app-tags-input>
-    </div>
+  <div class="form-group mb-4">
+    <label class="mr-2" for="specialJobTitles">Jobs outside the rec day's division
+      <fa-icon icon="question-circle" [ngbTooltip]="tipContent"></fa-icon>
+    </label>
+    <ng-template #tipContent>
+      The global division/subdivision will not appear in the agenda for interviewers with the specified job
+      titles.<br>
+      This is useful for HR interviewers.
+    </ng-template>
+    <app-tags-input id="specialJobTitles" [(items)]="specialJobTitles"
+                    placeholder="custom job title..."></app-tags-input>
+  </div>
 
-    <div *ngIf="!loading" class="form-group">
-      <button *ngIf="downloadUrl == null"
-              class="btn btn-info"
-              title="Generate candidate agendas"
-              [disabled]="planningFile == null"
-              (click)="onSubmit()">
-        <fa-icon icon="cogs" class="mr-2"></fa-icon>
-        Generate
-      </button>
-      <a *ngIf="downloadUrl != null"
-         class="btn btn-success" title="Download all agendas" href="{{downloadUrl}}">
-        <fa-icon icon="download" class="mr-2"></fa-icon>
-        Download
-      </a>
-      <button class="btn btn-outline-info ml-2"
-              title="Clear form"
-              (click)="resetForm()">Reset
-      </button>
-    </div>
-    <div *ngIf="loading" class="form-group">
-      <ngb-progressbar type="info"
-                       value="100"
-                       [striped]="true"
-                       [animated]="true"
-                       height="38px">
-        <span><fa-icon icon="clock" class="mr-2"></fa-icon>Loading, please wait...</span>
-      </ngb-progressbar>
-    </div>
-  </form>
+  <div *ngIf="!loading" class="form-group">
+    <button *ngIf="downloadUrl == null"
+            class="btn btn-info"
+            title="Generate candidate agendas"
+            [disabled]="planningFile == null"
+            (click)="onSubmit()">
+      <fa-icon icon="cogs" class="mr-2"></fa-icon>
+      Generate
+    </button>
+    <a *ngIf="downloadUrl != null"
+       class="btn btn-success" title="Download all agendas" href="{{downloadUrl}}">
+      <fa-icon icon="download" class="mr-2"></fa-icon>
+      Download
+    </a>
+    <button class="btn btn-outline-info ml-2"
+            title="Clear form"
+            (click)="resetForm()">Reset
+    </button>
+  </div>
+  <div *ngIf="loading" class="form-group">
+    <ngb-progressbar type="info"
+                     value="100"
+                     [striped]="true"
+                     [animated]="true"
+                     height="38px">
+      <span><fa-icon icon="clock" class="mr-2"></fa-icon>Loading, please wait...</span>
+    </ngb-progressbar>
+  </div>
 
   <ngb-alert *ngIf="error != null" type="danger" (close)="resetForm()">
     <fa-icon icon="exclamation-circle" class="mr-2"></fa-icon>
