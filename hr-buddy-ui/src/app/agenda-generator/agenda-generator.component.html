@@ -31,8 +31,9 @@
       titles.<br>
       This is useful for HR interviewers.
     </ng-template>
-    <app-tags-input id="specialJobTitles" [(items)]="specialJobTitles"
-                    placeholder="custom job title..."></app-tags-input>
+    <app-tags-input id="specialJobTitles" #tagsInput
+            [(items)]="specialJobTitles"
+            placeholder="custom job title..."></app-tags-input>
   </div>
 
   <div *ngIf="!loading" class="form-group">

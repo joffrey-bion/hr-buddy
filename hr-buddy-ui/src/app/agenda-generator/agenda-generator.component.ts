@@ -1,6 +1,7 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {GenerateAgendasResponse, HrBuddyClient} from '../hr-buddy-client.service';
+import {TagsInputComponent} from '../tags-input/tags-input.component';
 
 @Component({
   selector: 'app-agenda-generator',
@@ -23,6 +24,9 @@ export class AgendaGeneratorComponent {
 
   @ViewChild('fileInput')
   fileInput: ElementRef;
+
+  @ViewChild('tagsInput')
+  tagsInput: TagsInputComponent;
 
   constructor(private hrBuddyClient: HrBuddyClient) {
   }
@@ -64,5 +68,6 @@ export class AgendaGeneratorComponent {
     this.loading = false;
     // the only way of clearing the actual file input (https://stackoverflow.com/a/40165524/1540818)
     this.fileInput.nativeElement.value = "";
+    this.tagsInput.clearInput();
   }
 }

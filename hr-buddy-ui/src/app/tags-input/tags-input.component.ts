@@ -23,8 +23,12 @@ export class TagsInputComponent {
     this.inputEl.nativeElement.value = '';
   }
 
-  remove(item) {
+  remove(item: string) {
     this.items.splice(this.items.indexOf(item), 1);
     this.inputEl.nativeElement.focus();
+  }
+
+  clearInput() {
+    this.inputEl.nativeElement.value = '';
   }
 }
