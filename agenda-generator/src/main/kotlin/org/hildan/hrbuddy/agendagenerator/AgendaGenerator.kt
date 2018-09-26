@@ -5,18 +5,6 @@ import org.hildan.hrbuddy.agendagenerator.parser.parsePlanning
 import java.io.File
 import java.io.InputStream
 
-interface Config {
-    val planningFile: File
-    val templateFile: File?
-    val outputDir: File
-}
-
-fun generateAgendas(config: Config) {
-    config.run {
-        generateAgendas(planningFile.inputStream(), outputDir, templateFile)
-    }
-}
-
 fun generateAgendas(
     planningExcel: InputStream,
     outputDir: File,
