@@ -75,11 +75,11 @@ private fun createCandidate(row: Row?): Candidate? {
     val name = cell.stringCellValue ?: formatError("Missing candidate name", row.rowNum, 0)
     val (firstName, lastName) = splitFullName(name, row.rowNum, 0)
 
-    val cell1 = row.getCell(1) ?: formatError("Missing morning taxi time for candidate '$name'", row.rowNum, 1)
-    val morningTaxi = cell1.localTimeValue()
+    val cell1 = row.getCell(1)
+    val morningTaxi = cell1.localTimeValueOrNull()
 
-    val cell2 = row.getCell(2) ?: formatError("Missing evening taxi time for candidate '$name'", row.rowNum, 2)
-    val eveningTaxi = cell2.localTimeValue()
+    val cell2 = row.getCell(2)
+    val eveningTaxi = cell2.localTimeValueOrNull()
 
     return Candidate(firstName, lastName, morningTaxi, eveningTaxi)
 }

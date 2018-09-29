@@ -31,7 +31,10 @@ open class Person(
 }
 
 class Candidate(
-    firstName: String, lastName: String, val morningTaxiTime: LocalTime, val eveningTaxiTime: LocalTime
+    firstName: String,
+    lastName: String,
+    val morningTaxiTime: LocalTime?,
+    val eveningTaxiTime: LocalTime?
 ) : Person(firstName, lastName) {
 
     override fun equals(other: Any?): Boolean {
@@ -49,8 +52,8 @@ class Candidate(
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + morningTaxiTime.hashCode()
-        result = 31 * result + eveningTaxiTime.hashCode()
+        result = 31 * result + (morningTaxiTime?.hashCode() ?: 0)
+        result = 31 * result + (eveningTaxiTime?.hashCode() ?: 0)
         return result
     }
 }

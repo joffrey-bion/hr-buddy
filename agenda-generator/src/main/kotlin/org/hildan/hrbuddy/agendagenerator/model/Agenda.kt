@@ -6,8 +6,8 @@ import java.time.LocalTime
 class Agenda(
     val date: LocalDate,
     val candidate: Person,
-    val morningTaxiTime: LocalTime,
-    val eveningTaxiTime: LocalTime,
+    val morningTaxiTime: LocalTime?,
+    val eveningTaxiTime: LocalTime?,
     val morningSlots: List<Interview>,
     val afternoonSlots: List<Interview>
 )

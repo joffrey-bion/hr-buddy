@@ -39,8 +39,10 @@ internal fun getStringData(sheet: Sheet, key: String): String {
 
 internal fun getDateData(sheet: Sheet, key: String): LocalDate = getData(sheet, key).localDateValue()
 
-internal fun Cell.localTimeValue(): LocalTime {
+internal fun Cell?.localTimeValueOrNull(): LocalTime? {
+    if (this == null) return null
     var cellText = DataFormatter().formatCellValue(this)
+    if (cellText.isEmpty()) return null
     try {
         if (cellText.substringBefore(':').length < 2) {
             cellText = "0$cellText"
