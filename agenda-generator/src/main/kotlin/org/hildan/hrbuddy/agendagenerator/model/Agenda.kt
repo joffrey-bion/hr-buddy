@@ -2,6 +2,9 @@ package org.hildan.hrbuddy.agendagenerator.model
 
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+
+private val formatter = DateTimeFormatter.ofPattern("EEEE, MMM d")
 
 class Agenda(
     val date: LocalDate,
@@ -10,7 +13,9 @@ class Agenda(
     val eveningTaxiTime: LocalTime?,
     val morningSlots: List<Interview>,
     val afternoonSlots: List<Interview>
-)
+) {
+    val fullDate = formatter.format(date)
+}
 
 class Interview(
     val start: LocalTime,
