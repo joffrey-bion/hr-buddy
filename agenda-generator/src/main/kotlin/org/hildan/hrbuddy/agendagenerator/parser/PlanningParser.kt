@@ -18,21 +18,19 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 data class PlanningParserOptions(
-    val noDivisionJobTitles: List<String> = listOf("RH Consultant", "Recruitment specialist")
+    val noDivisionJobTitles: List<String> = listOf("HR Consultant", "Recruitment specialist")
 )
 
 fun parsePlanning(planningExcel: InputStream, options: PlanningParserOptions? = null): Planning =
     getWorkbook(planningExcel).use { parsePlanning(it, options) }
 
-private fun getWorkbook(planningExcel: InputStream): XSSFWorkbook {
-    try {
-        return XSSFWorkbook(planningExcel)
-    } catch (e: Exception) {
-        formatError("Invalid file format: ${e.message}")
-    }
+private fun getWorkbook(planningExcel: InputStream): XSSFWorkbook = try {
+    XSSFWorkbook(planningExcel)
+} catch (e: Exception) {
+    formatError("Invalid file format: ${e.message}")
 }
 
-fun parsePlanning(workbook: Workbook, options: PlanningParserOptions? = null): Planning {
+private fun parsePlanning(workbook: Workbook, options: PlanningParserOptions? = null): Planning {
     val globalInfo = parseGlobalInfo(workbook)
     val candidates = parseCandidates(workbook)
     val interviewParser = InterviewParser(globalInfo, candidates, options ?: PlanningParserOptions())
@@ -120,7 +118,7 @@ private class InterviewParser(
         val interviewers = buildInterviewers(firstNames, lastNames, jobTitles, teams)
 
         val roomsRowNum = if (teams == null) startRowNum + 2 else startRowNum + 3
-        val rooms = parseRooms(sheet, roomsRowNum, nbInterviewers)
+        val rooms = parseRooms(sheet, roomsRowNum, interviewers.size)
 
         return buildInterviews(sheet, roomsRowNum + 1, interviewers, rooms)
     }

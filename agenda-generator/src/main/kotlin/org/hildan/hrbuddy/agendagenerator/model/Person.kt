@@ -3,7 +3,8 @@ package org.hildan.hrbuddy.agendagenerator.model
 import java.time.LocalTime
 
 open class Person(
-    val firstName: String, val lastName: String
+    val firstName: String,
+    val lastName: String
 ) {
     val fullName: String = "$firstName ${lastName.toUpperCase()}"
 

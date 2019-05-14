@@ -13,7 +13,12 @@ data class Planning(
     private fun createAgenda(candidate: Candidate, interviews: List<Interview>): Agenda {
         val (morningInts, afternoonInts) = interviews.sortedBy { it.start }.partition { it.isBeforeLunch }
         return Agenda(
-            globalInfo.date, candidate, candidate.morningTaxiTime, candidate.eveningTaxiTime, morningInts, afternoonInts
+            globalInfo.date,
+            candidate,
+            candidate.morningTaxiTime,
+            candidate.eveningTaxiTime,
+            morningInts,
+            afternoonInts
         )
     }
 }
